@@ -1,0 +1,28 @@
+class Solution {
+    public int maxFrequency(int[] nums, int k, int numOperations) {
+
+        //sort array before processing 
+        Arrays.sort(nums);
+        int n = nums.length;
+        int result = 0;
+        
+        //find max frequency for each  unique element(iterate throuugh array)
+        for (int i = 0, l = 0, r = 0; i < n;) {
+            int current = nums[i], same = 0;
+            while (i < n && nums[i] == current) { same++; i++; }
+            
+            // Move the upper bound pointer while elements stay inside the allowed increment window
+            while (r < n && nums[r] <= current + k) r++;
+            while (l < n && nums[l] < current - k) l++;
+            
+            result = Math.max(result, Math.min(r - l, same + numOperations));
+        }
+        
+        //Repeat sliding window logic with a different condition set
+        for (int l = 0, r = 0; r < n; l++) {
+            while (r < n && (long) nums[l] + 2L * k >= nums[r]) r++;
+            result = Math.max(result, Math.min(numOperations, r - l));
+        }
+        return result;
+    }
+}
